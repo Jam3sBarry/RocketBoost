@@ -11,6 +11,7 @@ public class Movement : MonoBehaviour
     [SerializeField] ParticleSystem mainEngineParticles;
     [SerializeField] ParticleSystem rightThrustParticles;
     [SerializeField] ParticleSystem leftThrustParticles;
+    public bool canRotateLeft = false;
 
     Rigidbody rb;
     AudioSource audioSource;
@@ -67,11 +68,12 @@ public class Movement : MonoBehaviour
     private void ProcessRotation()
     {
         float rotationInput = rotation.ReadValue<float>();
-        if(rotationInput < 0)
+
+        if (rotationInput < 0)
         {
             RotateRight();
         }
-        else if(rotationInput > 0)
+        else if (rotationInput > 0 && canRotateLeft)
         {
             RotateLeft();
         }
@@ -80,6 +82,7 @@ public class Movement : MonoBehaviour
             StopRotating();
         }
     }
+
 
     private void RotateRight()
     {
