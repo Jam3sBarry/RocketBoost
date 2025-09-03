@@ -4,17 +4,18 @@ public class CollectibleItem : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
+        // Check if the object that entered the trigger is the player
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Item collected");
-
-            // Enable left rotation
+            // Try to get the Movement script from the player
             Movement movementScript = other.GetComponent<Movement>();
             if (movementScript != null)
             {
-                movementScript.canRotateLeft = true;
+                // Enable left rotation and show the unlock message
+                movementScript.ShowUnlockMessage();
             }
 
+            // Destroy the collectible item
             Destroy(gameObject);
         }
     }

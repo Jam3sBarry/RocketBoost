@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class Movement : MonoBehaviour
-{   
+{
     [SerializeField] InputAction thrust;
     [SerializeField] InputAction rotation;
     [SerializeField] float thrustStrength = 100f;
@@ -11,20 +12,27 @@ public class Movement : MonoBehaviour
     [SerializeField] ParticleSystem mainEngineParticles;
     [SerializeField] ParticleSystem rightThrustParticles;
     [SerializeField] ParticleSystem leftThrustParticles;
-    public bool canRotateLeft = false;
+    [SerializeField] TextMeshProUGUI unlockMessageText; // TextMeshPro reference
 
     Rigidbody rb;
     AudioSource audioSource;
+    public bool canRotateLeft = false;
 
-    private void Start() 
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        audioSource = GetComponent<AudioSource>();    
+        audioSource = GetComponent<AudioSource>();
+
+        // Hide the unlock message at start
+        if (unlockMessageText != null)
+        {
+            unlockMessageText.enabled = false;
+        }
     }
 
-    private void OnEnable() 
+    private void OnEnable()
     {
-        thrust.Enable(); 
+        thrust.Enable();
         rotation.Enable();
     }
 
@@ -83,7 +91,6 @@ public class Movement : MonoBehaviour
         }
     }
 
-
     private void RotateRight()
     {
         ApplyRotation(rotationStrength);
@@ -115,5 +122,22 @@ public class Movement : MonoBehaviour
         rb.freezeRotation = true;
         transform.Rotate(Vector3.forward * rotationThisFrame * Time.fixedDeltaTime);
         rb.freezeRotation = false;
+    }
+
+    // Called by CollectibleItem when collected
+    public void ShowUnlockMessage()
+    {
+        canRotateLeft = true;
+
+        if (unlockMessageText != null)
+        {
+            unlockMessageText.enabled = true;
+            Invoke(nameof(HideUnlockMessage), 3f); // Hide after 3 seconds
+        }
+    }
+
+    private void HideUnlockMessage()
+    {
+        unlockMessageText.enabled = false;
     }
 }
