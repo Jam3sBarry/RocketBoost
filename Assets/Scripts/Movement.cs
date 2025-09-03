@@ -12,18 +12,19 @@ public class Movement : MonoBehaviour
     [SerializeField] ParticleSystem mainEngineParticles;
     [SerializeField] ParticleSystem rightThrustParticles;
     [SerializeField] ParticleSystem leftThrustParticles;
-    [SerializeField] TextMeshProUGUI unlockMessageText; // TextMeshPro reference
+    [SerializeField] TextMeshProUGUI unlockMessageText;
 
     Rigidbody rb;
     AudioSource audioSource;
+
     public bool canRotateLeft = false;
+    public bool canRotateRight = false; // NEW: Right rotation disabled at start
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
 
-        // Hide the unlock message at start
         if (unlockMessageText != null)
         {
             unlockMessageText.enabled = false;
@@ -77,7 +78,7 @@ public class Movement : MonoBehaviour
     {
         float rotationInput = rotation.ReadValue<float>();
 
-        if (rotationInput < 0)
+        if (rotationInput < 0 && canRotateRight)
         {
             RotateRight();
         }
@@ -124,7 +125,6 @@ public class Movement : MonoBehaviour
         rb.freezeRotation = false;
     }
 
-    // Called by CollectibleItem when collected
     public void ShowUnlockMessage()
     {
         canRotateLeft = true;
@@ -132,12 +132,18 @@ public class Movement : MonoBehaviour
         if (unlockMessageText != null)
         {
             unlockMessageText.enabled = true;
-            Invoke(nameof(HideUnlockMessage), 3f); // Hide after 3 seconds
+            Invoke(nameof(HideUnlockMessage), 3f);
         }
     }
 
     private void HideUnlockMessage()
     {
         unlockMessageText.enabled = false;
+    }
+
+    // OPTIONAL: Call this to unlock right rotation later
+    public void UnlockRightRotation()
+    {
+        canRotateRight = true;
     }
 }
