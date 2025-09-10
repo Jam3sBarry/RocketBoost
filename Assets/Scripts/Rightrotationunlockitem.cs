@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class Rightrotationunlockitem : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnTriggerEnter(Collider other)
     {
-        
-    }
+        Movement movementScript = other.GetComponent<Movement>();
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (movementScript != null)
+        {
+            movementScript.UnlockRightRotation();                         // Enable right rotation
+            movementScript.ShowCollectibleMessage("Left rotation unlocked!"); // Show only this message
+            Destroy(gameObject);                                          // Remove the collectible
+        }
     }
 }

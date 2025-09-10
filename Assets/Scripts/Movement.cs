@@ -12,13 +12,14 @@ public class Movement : MonoBehaviour
     [SerializeField] ParticleSystem mainEngineParticles;
     [SerializeField] ParticleSystem rightThrustParticles;
     [SerializeField] ParticleSystem leftThrustParticles;
-    [SerializeField] TextMeshProUGUI unlockMessageText;
+    [SerializeField] TextMeshProUGUI unlockMessageText;           // For left rotation unlock
+    [SerializeField] TextMeshProUGUI collectibleMessageText;      // NEW: For general collectibles
 
     Rigidbody rb;
     AudioSource audioSource;
 
     public bool canRotateLeft = false;
-    public bool canRotateRight = false; // NEW: Right rotation disabled at start
+    public bool canRotateRight = false;
 
     private void Start()
     {
@@ -26,9 +27,10 @@ public class Movement : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
 
         if (unlockMessageText != null)
-        {
             unlockMessageText.enabled = false;
-        }
+
+        if (collectibleMessageText != null)
+            collectibleMessageText.enabled = false;
     }
 
     private void OnEnable()
@@ -141,9 +143,24 @@ public class Movement : MonoBehaviour
         unlockMessageText.enabled = false;
     }
 
-    // OPTIONAL: Call this to unlock right rotation later
     public void UnlockRightRotation()
     {
         canRotateRight = true;
+    }
+
+    // NEW: Show collectible message in top-left
+    public void ShowCollectibleMessage(string message)
+    {
+        if (collectibleMessageText != null)
+        {
+            collectibleMessageText.text = message;
+            collectibleMessageText.enabled = true;
+            Invoke(nameof(HideCollectibleMessage), 3f);
+        }
+    }
+
+    private void HideCollectibleMessage()
+    {
+        collectibleMessageText.enabled = false;
     }
 }
